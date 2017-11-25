@@ -1,0 +1,189 @@
+TVC Hardware Alignment (enable/disable) (1/0)
+*VCAL: 0;
+X servo center-point (degrees on X servo)
+*XCAL: 90;
+Y servo center-point (degrees on Y servo)
+*YCAL: 90;
+
+
+Pyro Channel Check (enable/disable) (0/1)
+*PCC0: 0;
+
+
+Pyro channel 1 (3+) (meters) - ascent. Set to -100 to activate channel at burnout.
+*PC1: 0;
+Pyro channel 2 (3+) (meters) - descent
+*PC2: 0;
+Pyro channel 3 (3+) (meters) - descent
+*PC3: 0;
+Pyro channel 4 (3+) (meters) - descent
+*PC4: 0;
+
+
+Pyro channel time (0.01+) (seconds)
+*PCT: 0.75;
+
+
+In-flight abort (enable/disable) (1/0)
+*IFA0: 1;
+Abort tolerance (2+) (degrees)
+*IFA1: 15;
+Abort safeguard (1+) (seconds)
+*IFA2: 2.25;
+
+
+X axis PID values
+X P
+*XP: 0;
+X I
+*XI: 0;
+X D
+*XD: 0;
+
+
+Y axis PID values
+Y P
+*YP: 0;
+Y I
+*YI: 0;
+Y D
+*YD: 0;
+
+
+PID Limit
+*PID0: 5;
+TVC Gear Ratio
+*TVC0: 6;
+X PID drive direction
+*TVC1: 0;
+Y PID drive direction
+*TVC2: 0;
+
+
+Course correction (enable/disable) (1/0)
+*CC0: 1;
+Course correction time (seconds)
+*CC1: 0.75;
+Course correction rate (degrees per second)
+*CC2: 15;
+
+
+Launch Detection (9.81+) (meters per second squared)
+*LD0: 12;
+
+
+Static Fire mode (enable/disable) (1/0)
+*SFT0: 0;
+Static Fire timer (10+) (seconds)
+*SFT1: 10;
+
+
+Party Mode (0 - 7)
+*PM: 1;
+
+
+SD CARD CHECK VALUE
+Leave at 1.54321 to ensure all SD card values were read correctly before startup.
+*SDC0: 1.54321;
+
+
+TVC HARDWARE ALIGNMENT
+When hardware alignment is enabled, the vehicle will NOT boot into pad idle mode. Instead, Signal will allow you to quickly adjust the alignment of the TVC hardware, holding the mount at its calibrated center position. Once enabled, the first two settings relate to the relative alignment of the vectoring servos. Using the BPS thrust vectoring mount, each increment of 1 degree on the servo will change the mount’s alignment approximately 0.16 degrees. It is recommended that you use a body tube sticking far out of the rocket to calibrate the mount. The long tube will visually amplify any misalignment, allowing for better calibration. The calibration values should not be decimals, only whole numbers.
+
+
+
+
+PYRO CHANNEL CHECK
+Check all pyro channels by cycling through them. Best used for checking channels with a voltmeter. For ground deployment testing, please use the static fire mode.
+
+
+
+
+
+
+PYRO CHANNELS TRIGGERS
+Channels 1-4 can be used for normal chutes/in-flight events. Channel 1 fires on ascent, arms at liftoff and disarms after apogee. At apogee, channels 2, 3, and 4 are armed. When the vehicle passes the trigger altitude, the respective channel will be enabled. All channels are forced to shut off below 3 meters, this includes in-flight abort. If you set your trigger height below 3, the channel will not fire. To disable a channel, set the trigger to 0. Channel 1 can be triggered at motor burnout by setting the trigger to -100.
+
+
+PYRO ON-TIME
+This setting determines how long each pyro channel fires, once triggered, before turning off. If you’re concerned about draining or shorting out power when a pyro channel is activated, this setting may be useful. A good place to start is 0.75 seconds, but it is worth testing how long any pyro controlled ignitors take to light fully, and whether they could potentially cause a short circuit once triggered. Do not ever set to 0. 
+
+
+
+
+IN-FLIGHT ABORT(Pyro 4)
+The first setting here is the abort tolerance, in degrees. This is the maximum allowed deviation from the setpoint during powered flight. For example, a tolerance of 5 degrees will allow the rocket to oscillate on the X or Y axis up to plus or minus 5 degrees. If the rocket exceeds 5 degrees on either axis while under thrust, an in-flight abort will be called, and channel 4 will be activated. The vehicle must be above 3 meters up for the abort pyro to activate. So long as pyro channel 4 connected with a parachute, this can usually prevent a poorly flying rocket from damaging itself, the range, or flying in an unsafe manner.
+The second parameter is the abort safeguard. An in-flight abort can harm the rocket if it’s flying fast enough. This setting controls the number of seconds the abort system will remain armed after liftoff. After exceeding the time set here, the abort system will be disarmed. This can also protect from false positive aborts. At the end of a powered flight with a slow taper on the thrust curve, the vehicle may start to lose control before recognizing the motor has burnt out. Subtracting at least 0.5 seconds from the rocket motor’s thrust curve is a good place to start.
+
+
+THRUST VECTOR CONTROL(TVC)
+TVC is what keeps the rocket upright. Getting the following values correct will determine how stable the rocket’s flight is. Take a minute to read through and familiarize yourself with how this part of the software works. Signal uses a “PID” controller to generate outputs which are sent to the thrust vectoring mount. Each letter stands for a different part of the algorithm that computes the TVC Output.
+
+
+“P” stands for proportional. This part of the controller generates an output directly proportional to the orientation on that axis, scaled by the tuning value. If the P tuning value is 0.5(with no other controller gains), and the orientation of the vehicle is 6 degrees off course, the algorithm will output a value of 3. The P of the controller will not work on its own in this case. The best outcome from a strictly proportional controller is that the rocket will maintain a steady oscillation as it flies.
+“I” stands for integral. This part of the controller deals with error over time. If the rocket was holding steady at 3 degrees away from upright, with the I gain set to 1, and the TVC output being 0, the I gain would slowly add to the TVC output in order to bring the rocket back to 0 degrees. Increasing the I gain will make this correction happen faster, but can cause a bit of overshoot, where it actually induces a bit of oscillation in the vehicle. In the case of Signal this value is helpful for dealing with a small misalignment in the TVC hardware.
+“D” stands for derivative. This final part of the controller helps damp out the previous two values, which are prone to oscillation. Oversimplified, the D value looks into the future. As your rocket is moving from 6 degrees off-course, back to 0(totally upright), it has some speed and inertia to it. The rotation must be slowed down by pushing the TVC mount in the opposite direction before hitting 0. The higher the D value, the more intense that “pushback” will be. 
+
+
+Technically speaking, there are two PID controllers in charge of generating outputs for the vectoring mount. One for each axis. If desired, they can be set to different tunings, though it is strongly recommended that new users keep the X and Y values identical to each other.
+
+
+
+
+TVC LOW LEVEL SETTINGS
+Don't modify these settings unless you are building your own vectoring mount.
+
+
+PID LIMIT
+Your TVC hardware, custom or not, can only actuate a certain number of degrees from center. In the BPS R1 mount, this is about 5 degrees. The servos don’t know this, and the PID limit protects them from trying to drive the hardware further than it can physically go. While using BPS R1 hardware, this value should remain at 5.
+
+
+
+
+GEAR RATIO
+The gear ratio relates the written degrees on each servo to the equivalent degrees on the vectoring mount. With BPS R1 hardware, this value should remain at 6. 6 degrees on a servo equates to 1 degree in the TVC mount.
+
+
+
+
+DRIVE DIRECTION
+If you are using Signal Alpha with the BPS R1 hardware, both of these values should be set to 0. 0 corresponds to a direct drive PID output, 1 corresponds to a reverse drive PID output.
+
+
+
+
+COURSE CORRECTION
+This setting corrects any error in the rocket’s initial orientation off the pad. Once launched, a correction maneuver will be plotted and followed, bringing the rocket back to a vertical orientation. In addition to enabling the setting, you can set the time after launch, at which the course correction maneuver begins. The rocket should be free of any launch rod/rail before beginning its correction maneuver, so it should be set according to the launch pad you use. At least 0.75 seconds is a good starting point for most rockets. You can also control the correction rate in degrees per second. This corresponds to how fast the setpoint approaches 0, or totally upright. If it’s too fast, you risk overshooting the setpoint because the vehicle’s inertia through the maneuver. This could cause an in-flight abort. If the correction begins before the in-flight abort disables, Signal will abort the flight if it can’t keep up with the correction rate. A good place to start for most rockets is 15-20 degrees per second.
+
+
+
+
+
+
+LAUNCH DETECTION
+Signal uses acceleration measurements to detect liftoff and begin thrust vector control. Some flights lift off very slowly, meaning the acceleration off the pad is low. This setting is the threshold that the vehicle must exceed when it starts moving up. The acceleration must be sustained for several milliseconds for it to count as a liftoff. Try to keep the value low to ensure the threshold is exceeded every time. By keeping the threshold low, there will also be a higher chance of a false liftoff detection, requiring a reboot of the flight computer. You can reduce the chances of this by only powering on Signal Alpha once it’s on the pad. Acceleration is measured in m/s^2 here. A good value to start with is 12(+ 2.19 m/s^2 off the pad). This represents a total acceleration measurement of at least 12.81m/s^2. 9.81(gravity) + 3 = 12.81.
+
+
+
+
+STATIC FIRE TESTING
+Static Fire mode can be used for highly experimental rockets where a significantly new tuning is used. If this is the case, you can mount your rocket on string tethers, a gimbal mount, or using any other method that allows the vehicle to pitch and yaw freely on the X and Y axis around the CM. If you’re generating and tuning the PID values of the rocket yourself, I HIGHLY recommend using this feature. After a specified countdown, ALL PYRO CHANNELS will turn on for 75 milliseconds. The vehicle will then directly enter the powered flight mode, with vectoring active. Do not launch a non-tethered or held down rocket in static fire mode.
+
+
+
+
+
+
+PARTY MODE
+Depending on the setting (1 - 7), different “party modes” will be activated. These include actuating up and down on one axis, both axes, etc. The actuation will always be from 0 to the PID limit, set in the TVC low-level settings. If you’re building your own custom TVC mount, it may help you troubleshoot your design. 
+
+
+WARNINGS:
+>Do not include units of measurement in the settings. 
+>Carefully review all configuration values before each flight or test. All configuration values will show up in the settings log with the corresponding flight number. 
+>If a function is turned off, the related functions or settings directly below it will have no effect.
+>Do not edit the setting primer, the all-caps text before the setting value.
+
+
+Thank you for using Signal Avionics! If you have questions about the hardware,
+software, or anything else, please send an email to joe@bps.space

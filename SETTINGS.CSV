@@ -1,0 +1,86 @@
+---PARAMETER---,---VALUE---
+Flight #, 81
+Flight computer, Signal Alpha
+Software version, SignalSoft 0.8.2
+Build date, Nov 13th 2017
+Log speed, 40Hz
+Static fire mode, Disabled
+Pyro on-duration, 0.75 seconds
+Pyro-1 trigger, >= 17.00m
+Pyro-2 trigger, Disabled
+Pyro-3 trigger, Disabled
+Pyro-4 trigger, <= 28.00m
+Pyro-4 in-flight abort, Enabled
+Pyro-4 flight abort trigger, ±25.00°
+Pyro-4 flight abort safeguard time, 2.25 seconds
+Battery voltage, 11.87v
+Course correction mode, Enabled
+Course correction start time, 1.50 seconds
+Course correction rate, 25.00°/second
+Launch detection threshold, 12.00m/s²
+PID sample rate, 40Hz
+TVCX P, 0.25
+TVCX I, 0.35
+TVCX D, 0.09
+TVCY P, 0.25
+TVCY I, 0.35
+TVCY D, 0.09
+TVC PID Limit, 5.00
+TVC gear ratio, 6.00
+TVCX drive direction, Direct
+TVCY drive driection, Direct
+TVCX midpoint, 87
+TVCY midpoint, 83
+Temperature, 19.86C / 67.75F
+Baseline pressure, 100110.00Pa
+Baseline altitude, 0.00m
+SD card check val, 1.54321
+ 
+ 
+ 
+ 
+ 
+ 
+---PARAMETER---,---VALUE---
+Flight #, 82
+Flight computer, Signal Alpha
+Software version, SignalSoft 0.8.2
+Build date, Nov 13th 2017
+Log speed, 40Hz
+Static fire mode, Disabled
+Pyro on-duration, 0.75 seconds
+Pyro-1 trigger, >= 17.00m
+Pyro-2 trigger, Disabled
+Pyro-3 trigger, Disabled
+Pyro-4 trigger, <= 28.00m
+Pyro-4 in-flight abort, Enabled
+Pyro-4 flight abort trigger, ±25.00°
+Pyro-4 flight abort safeguard time, 2.25 seconds
+Battery voltage, 11.91v
+Course correction mode, Enabled
+Course correction start time, 1.50 seconds
+Course correction rate, 25.00°/second
+Launch detection threshold, 12.00m/s²
+PID sample rate, 40Hz
+TVCX P, 0.25
+TVCX I, 0.35
+TVCX D, 0.09
+TVCY P, 0.25
+TVCY I, 0.35
+TVCY D, 0.09
+TVC PID Limit, 5.00
+TVC gear ratio, 6.00
+TVCX drive direction, Direct
+TVCY drive driection, Direct
+TVCX midpoint, 87
+TVCY midpoint, 83
+Temperature, 15.40C / 59.72F
+Baseline pressure, 99816.00Pa
+Baseline altitude, 0.00m
+SD card check val, 1.54321
+ 
+ 
+ 
+ 
+ 
+ 

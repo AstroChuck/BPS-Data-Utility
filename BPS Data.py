@@ -15,6 +15,9 @@ from tkinter import ttk
 
 import matplotlib.pyplot as plt
 
+import shutil
+import os
+
 
 def data_import(filename):
     datafile = "fl82.csv"
@@ -88,10 +91,8 @@ class BPSUtility(tk.Tk):
 
         self.home = Home(notebook)        
         self.plotter = Plotter(notebook)
-        
-        
-        self.tuner = ttk.Frame(notebook)
-        self.config = ttk.Frame(notebook)
+        self.tuner = Tuner(notebook)
+        self.config = Config(notebook)
 
         notebook.add(self.home, text="Home")
         notebook.add(self.plotter, text="Data Review")
@@ -175,6 +176,22 @@ class Tuner(tk.Frame):
 class Config(tk.Frame):
     def __init__(self, parent):
         tk.Frame.__init__(self,parent)
+
+        self.working_file = "CONFIG1.txt"
+        
+        self.party_mode = tk.StringVar()
+        self.party_mode.trace('w', self.set_party_mode)
+        self.party_mode_box = ttk.Combobox(self, textvariable=self.party_mode)
+        self.party_mode_box['values'] = ('Off','1','2','3','4','5','6','7')
+        self.party_mode_box.current(0)
+        self.party_mode_box.pack()
+    def reset_file(self):
+        os.remove("CONFIG1.txt")
+        shutil.copy("CONFIG_template.txt", "CONFIG1.txt")
+    def set_party_mode(self, index, value, op):
+        #seek line config1
+        #config1.write(self.party_mode_box.get())
+        pass
 
 
 app = BPSUtility()
