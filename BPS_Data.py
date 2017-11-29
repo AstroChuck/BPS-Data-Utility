@@ -178,20 +178,59 @@ class Config(tk.Frame):
         tk.Frame.__init__(self,parent)
 
         self.working_file = "CONFIG1.txt"
+
+        self.reset_button = ttk.Button(self, text = "Reset Config", command= self.reset_file)
+        self.reset_button.pack()
         
+        self.VCAL_mode = tk.StringVar()
+        self.VCAL_mode.trace('w', self.write_config_file)
+        self.VCAL_box = ttk.Combobox(self, textvariable=self.VCAL_mode)
+        self.VCAL_box['values'] = ('Off','1','2','3','4','5','6','7')
+        self.VCAL_box.current(0)
+        self.VCAL_box.pack()
+
+        self.XCAL_mode = tk.StringVar()
+        self.XCAL_mode.trace('w', self.write_config_file)
+        self.XCAL_box = ttk.Combobox(self, textvariable=self.XCAL_mode)
+        self.XCAL_box['values'] = ('Off','1','2','3','4','5','6','7')
+        self.XCAL_box.current(0)
+        self.XCAL_box.pack()
+
+        self.YCAL_mode = tk.StringVar()
+        self.YCAL_mode.trace('w', self.write_config_file)
+        self.YCAL_box = ttk.Combobox(self, textvariable=self.YCAL_mode)
+        self.YCAL_box['values'] = ('Off','1','2','3','4','5','6','7')
+        self.YCAL_box.current(0)
+        self.YCAL_box.pack()
+
         self.party_mode = tk.StringVar()
-        self.party_mode.trace('w', self.set_party_mode)
+        self.party_mode.trace('w', self.write_config_file)
         self.party_mode_box = ttk.Combobox(self, textvariable=self.party_mode)
         self.party_mode_box['values'] = ('Off','1','2','3','4','5','6','7')
         self.party_mode_box.current(0)
         self.party_mode_box.pack()
+        
+
     def reset_file(self):
         os.remove("CONFIG1.txt")
         shutil.copy("CONFIG_template.txt", "CONFIG1.txt")
-    def set_party_mode(self, index, value, op):
-        #seek line config1
-        #config1.write(self.party_mode_box.get())
-        pass
+
+    def write_config_file(self):
+        os.remove(self.working_file)
+        with open(self.working_file, 'w', encoding = 'utf-8') as file:
+            file.writeline(self.VCAL_box.get())
+            file.writeline(self.XCAL_box.get())
+            file.writeline(self.YCAL_box.get())
+            file.writeline(self.PCC0_box.get())
+            file.writeline(self.PC1_box.get())
+            file.writeline(self.PC2_box.get())
+            file.writeline(self.PC3_box.get())
+            file.writeline(self.PC4_box.get())
+        #newfile
+        #write VCAL
+        #write XCAL
+        #write YCAL
+        #etc
 
 
 app = BPSUtility()
